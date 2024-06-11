@@ -7,3 +7,4 @@ certifi
 queries
 pillow
 streamlit-option-menu
+psycopg2-binary
