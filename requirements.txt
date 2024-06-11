@@ -5,5 +5,5 @@ plotly
 influxdb3-python
 certifi
 queries
-PIL
-streamlit_option_menu
+pillow
+streamlit-option-menu
