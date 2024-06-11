@@ -70,10 +70,10 @@ AND
 #-------- INFLUXDB CONNECTIONS --------
 
 client_Mycodash = InfluxDBClient3(
-    token="xxx",  #Read buckets Infra_Fungarium
+    token="8w-iWRvCbi7o_G83uZ2QteMHbE677ioKImXetJv5ActAKttDzb2jolr7AaQO_zpzWcOIxSEpoReQS8tmH_ncpw==",  #Read buckets Infra_Fungarium
     host="https://eu-central-1-1.aws.cloud2.influxdata.com",
-    org="xxx",
-    database="xxx",
+    org="c46a66937900cfee",
+    database="Infra_Fungarium",
     flight_client_options=flight_client_options(
         tls_root_certs=cert))
 
