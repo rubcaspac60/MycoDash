@@ -2,7 +2,7 @@ streamlit
 pandas
 numpy
 plotly
-influxdb_client_3
+influxdb3-python
 certifi
 queries
 PIL
