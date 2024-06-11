@@ -196,7 +196,7 @@ streamlit
 streamlit-option-menu==0.3.13
 stumpy==1.12.0
 sympy==1.12.1
-tangled-up-in-unicode==0.2.0
+tangled-up-in-unicode
 tblib==3.0.0
 tenacity==8.2.2
 tensorboard
