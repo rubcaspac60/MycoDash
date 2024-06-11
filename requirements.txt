@@ -1,10 +1,10 @@
 streamlit
 pandas
 numpy
+psycopg2-binary
 plotly
 influxdb3-python
 certifi
 queries
 pillow
 streamlit-option-menu
-psycopg2-binary
