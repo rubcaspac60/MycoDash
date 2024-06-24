@@ -7,6 +7,7 @@ from plotly.subplots import make_subplots
 import influxdb_client_3
 from influxdb_client_3 import InfluxDBClient3, Point
 from influxdb_client_3 import flight_client_options
+from influxdb_client_3 import query_api
 import certifi
 from queries import *
 from PIL import Image
