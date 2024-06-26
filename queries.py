@@ -173,3 +173,51 @@ def indicator(query, name, model):
     )
 
     return fig
+
+def indicator_AM2315C(query, name, model):
+    # Query data
+    info = client_Mycodash.query(query=query, language="sql")
+    df = info.to_pandas()
+
+    # Initialize the figure
+    fig = go.Figure()
+
+    try:
+        # Retrieve the latest values for the indicators
+        temp_value = df[f'{model}_Temperature'].iloc[-1]
+        humidity_value = df[f'{model}_Humidity'].iloc[-1]
+        time_label = str(df['time'].iloc[-1])
+        
+    except (IndexError, KeyError):
+        # Handle missing data
+        temp_value = np.nan
+        humidity_value = np.nan
+        time_label = "No data available"
+
+    # Add Temperature Indicator
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=temp_value,
+        title="Temperature",
+        number={"font": {"size": 50}},
+        domain={'row': 2, 'column': 0}))
+
+    # Add Humidity Indicator
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=humidity_value,
+        title="Humidity",
+        number={"font": {"size": 50}},
+        domain={'row': 1, 'column': 0}))
+
+    # Update layout
+    fig.update_layout(
+        title_text=f'{name}_{model}_{time_label}',
+        grid={'rows': 2, 'columns': 1, 'pattern': "independent"},
+        template={'data': {'indicator': [{'mode': "number+delta+gauge",
+                                          'delta': {'reference': 10},
+                                          'gauge': {'shape': "bullet"}}]},
+                  'layout': {'width': 300, 'height': 800}}
+    )
+
+    return fig
