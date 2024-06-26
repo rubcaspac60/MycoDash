@@ -7,7 +7,6 @@ from plotly.subplots import make_subplots
 import influxdb_client_3
 from influxdb_client_3 import InfluxDBClient3, Point
 from influxdb_client_3 import flight_client_options
-from influxdb_client_3 import query_api
 import certifi
 from queries import *
 from PIL import Image
@@ -72,7 +71,7 @@ if selected == "Actual Data":
             fig_Tent_2 = indicator(query_Tent_2_Spy_1, "Tent_2_Spy_1", "SCD30")
             st.plotly_chart(fig_Tent_2,use_container_width=True)
         with Tent_3:
-            fig_Tent_3 = indicator(query_Tent_3_Spy_1, "Tent_3_Spy_1", "SCD41")
+            fig_Tent_3 = indicator(query_Test_3_Spy_1, "Test_3_Spy_1", "AM2315C")
             st.plotly_chart(fig_Tent_3,use_container_width=True)
         with Tent_4:
             fig_Tent_4 = indicator(query_Tent_4_Spy_1, "Tent_4_Spy_1", "SCD30")
@@ -103,7 +102,7 @@ if selected == "Last 24 hrs":
             fig_Tent_2 = main_plotter(query_Tent_2_Spy_1, "Tent_2_Spy_1", "SCD30")
             st.plotly_chart(fig_Tent_2,use_container_width=True)
         with Tent_3:
-            fig_Tent_3 = main_plotter(query_Tent_3_Spy_1, "Tent_3_Spy_1", "SCD41")
+            fig_Tent_3 = main_plotter_AM2315C(query_Test_3_Spy_1, "Test_3_Spy_1", "AM2315C")
             st.plotly_chart(fig_Tent_3,use_container_width=True)
         with Tent_4:
             fig_Tent_4 = main_plotter(query_Tent_4_Spy_1, "Tent_4_Spy_1", "SCD30")
