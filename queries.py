@@ -49,9 +49,9 @@ AND
 ("SCD30_Temperature" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_CO2" IS NOT NULL)
 """
 
-query_Test_3_Spy_1 = """
+query_Tent_3_Spy_1 = """
 SELECT *
-FROM "Test_3_Spy_1"
+FROM "Tent_3_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
 AND

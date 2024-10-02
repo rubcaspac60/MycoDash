@@ -71,7 +71,7 @@ if selected == "Actual Data":
             fig_Tent_2 = indicator(query_Tent_2_Spy_1, "Tent_2_Spy_1", "SCD30")
             st.plotly_chart(fig_Tent_2,use_container_width=True)
         with Tent_3:
-            fig_Tent_3 = indicator(query_Test_3_Spy_1, "Test_3_Spy_1", "AM2315C")
+            fig_Tent_3 = indicator(query_Tent_3_Spy_1, "Tent_3_Spy_1", "AM2315C")
             st.plotly_chart(fig_Tent_3,use_container_width=True)
         with Tent_4:
             fig_Tent_4 = indicator(query_Tent_4_Spy_1, "Tent_4_Spy_1", "SCD30")
@@ -94,15 +94,19 @@ if selected == "Last 24 hrs":
     #--- Tents ---
     with st.container():
         st.write('---')
-        Tent_1, Tent_2, Tent_3, Tent_4 = st.columns(4)
+        Tent_1, Tent_2 = st.columns(2)
         with Tent_1:
             fig_Tent_1 = main_plotter(query_Tent_1_Spy_1, "Tent_1_Spy_1", "SCD30")
             st.plotly_chart(fig_Tent_1,use_container_width=True)
         with Tent_2:
             fig_Tent_2 = main_plotter(query_Tent_2_Spy_1, "Tent_2_Spy_1", "SCD30")
             st.plotly_chart(fig_Tent_2,use_container_width=True)
+            
+    with st.container():
+        st.write('---')
+        Tent_3, Tent_4 = st.columns(2)
         with Tent_3:
-            fig_Tent_3 = main_plotter_AM2315C(query_Test_3_Spy_1, "Test_3_Spy_1", "AM2315C")
+            fig_Tent_3 = main_plotter_AM2315C(query_Tent_3_Spy_1, "Tent_3_Spy_1", "AM2315C")
             st.plotly_chart(fig_Tent_3,use_container_width=True)
         with Tent_4:
             fig_Tent_4 = main_plotter(query_Tent_4_Spy_1, "Tent_4_Spy_1", "SCD30")
