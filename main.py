@@ -71,7 +71,7 @@ if selected == "Actual Data":
             fig_Tent_2 = indicator(query_Tent_2_Spy_1, "Tent_2_Spy_1", "SCD30")
             st.plotly_chart(fig_Tent_2,use_container_width=True)
         with Tent_3:
-            fig_Tent_3 = indicator(query_Tent_3_Spy_1, "Tent_3_Spy_1", "AM2315C")
+            fig_Tent_3 = indicator(query_Tent_3_Spy_1, "Test_3_Spy_1", "AM2315C")
             st.plotly_chart(fig_Tent_3,use_container_width=True)
         with Tent_4:
             fig_Tent_4 = indicator(query_Tent_4_Spy_1, "Tent_4_Spy_1", "SCD30")
