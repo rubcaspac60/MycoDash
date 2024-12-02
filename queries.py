@@ -19,47 +19,47 @@ query_Lab_1_Spy_1 = """
 SELECT *
 FROM "Lab_1_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '1 day'
 """
 query_Lab_2_Spy_1 = """
 SELECT *
 FROM "Lab_2_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '1 day'
 """
 query_Tent_1_Spy_1 = """
 SELECT *
 FROM "Tent_1_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '1 day'
 """
 
 query_Tent_2_Spy_1 = """
 SELECT *
 FROM "Tent_2_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '1 day'
 """
 
 query_Tent_3_Spy_1 = """
 SELECT *
 FROM "Tent_3_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '1 day'
 """
 
 query_Tent_4_Spy_1 = """
 SELECT *
 FROM "Tent_4_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '1 day'
 """
 
 query_Sto_1_Spy_1 = """
 SELECT *
 FROM "Sto_1_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '1 day'
 """
 
 # query_Mini_Tent_1_Spy_1 = """
@@ -94,7 +94,8 @@ def main_plotter(query, sensors, name):
     # Fetch data
     info = client_Mycodash.query(query=query, language="sql")
     df = info.to_pandas()
-
+    #format time to DAy_Month_Year format
+    df['time'] = df['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # Determine the number of rows needed based on the number of sensors
     num_sensors = len(sensors)
     fig = make_subplots(rows=num_sensors, cols=1, shared_xaxes=True, vertical_spacing=0.05)

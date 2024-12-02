@@ -130,9 +130,11 @@ if selected == "Last 24 hrs":
         st.write('---')
         Tent_1, Tent_2 = st.columns(2)
         with Tent_1:
+            sensors_Tent_1 = {"SCD41": "CO2", "SHT30": "Humidity","SHT30": "Temperature"}
             fig_Tent_1 = main_plotter(query_Tent_1_Spy_1, sensors=sensors_Tent_1, name= "Tent_1_Spy_1")
             st.plotly_chart(fig_Tent_1,use_container_width=True)
         with Tent_2:
+            sensors_Tent_2 = {"SCD41": "CO2", "SHT30": "Humidity","SHT30": "Temperature"}
             fig_Tent_2 = main_plotter(query_Tent_2_Spy_1, sensors=sensors_Tent_2, name= "Tent_2_Spy_1")
             st.plotly_chart(fig_Tent_2,use_container_width=True)
             
@@ -140,9 +142,11 @@ if selected == "Last 24 hrs":
         st.write('---')
         Tent_3, Tent_4 = st.columns(2)
         with Tent_3:
+            sensors_Tent_3 = {"SCD41": "CO2", "SHT30": "Humidity","SHT30": "Temperature"}
             fig_Tent_3 = main_plotter(query_Tent_3_Spy_1, sensors=sensors_Tent_3, name= "Tent_3_Spy_1")
             st.plotly_chart(fig_Tent_3,use_container_width=True)
         with Tent_4:
+            sensors_Tent_4 = {"SCD41": "CO2", "SHT30": "Humidity","SHT30": "Temperature"}
             fig_Tent_4 = main_plotter(query_Tent_4_Spy_1, sensors=sensors_Tent_4, name= "Tent_4_Spy_1")
             st.plotly_chart(fig_Tent_4,use_container_width=True)
             
