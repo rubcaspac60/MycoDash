@@ -29,7 +29,7 @@ FROM "Lab_2_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
 AND
-("SCD41_CO2" IS NOT NULL OR "SCD41_Humidity" IS NOT NULL OR "SCD41_Temperature" IS NOT NULL)
+("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
 """
 query_Tent_1_Spy_1 = """
 SELECT *
@@ -53,7 +53,7 @@ query_Tent_3_Spy_1 = """
 SELECT *
 FROM "Tent_3_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()
+time >= now() - interval '24 hour' AND time <= now()    
 AND
 ("AM2315C_Temperature" IS NOT NULL OR "AM2315C_Humidity" IS NOT NULL)
 """
@@ -67,6 +67,32 @@ AND
 ("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
 """
 
+query_Sto_1_Spy_1 = """
+SELECT *
+FROM "Sto_1_Spy_1"
+WHERE
+time >= now() - interval '24 hour' AND time <= now()
+AND
+("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
+"""
+
+query_Mini_Tent_1_Spy_1 = """
+SELECT *
+FROM "Mini_Tent_1_Spy_1"
+WHERE
+time >= now() - interval '24 hour' AND time <= now()
+AND
+("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
+"""
+
+query_Mini_Tent_2_Spy_1 = """
+SELECT *
+FROM "Mini_Tent_2_Spy_1"
+WHERE
+time >= now() - interval '24 hour' AND time <= now()
+AND
+("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
+"""
 #-------- INFLUXDB CONNECTIONS --------
 
 client_Mycodash = InfluxDBClient3(
@@ -78,26 +104,29 @@ client_Mycodash = InfluxDBClient3(
         tls_root_certs=cert))
 
 
-def main_plotter(query, name, model):
-    info = client_Mycodash.query(
-        query=query,
-        language="sql")
+def main_plotter(query, sensors, name):
+    # Fetch data
+    info = client_Mycodash.query(query=query, language="sql")
     df = info.to_pandas()
-    fig = make_subplots(rows=3, cols=1,
-                        shared_xaxes=True,
-                        vertical_spacing=0.05)
-    
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_CO2'], mode='lines', name='CO2'),row=1, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_CO2'].rolling(window=25).mean(), mode='lines', name='Avg.CO2'),row=1, col=1)
-    fig.update_yaxes(title_text="CO2 (ppm)", showgrid=True, row=1, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Temperature'], mode='lines', name='Temperature'),row=2, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Temperature'].rolling(window=25).mean(), mode='lines', name='Avg.Temp.'),row=2, col=1)
-    fig.update_yaxes(title_text="Temperature (C)", showgrid=True, row=2, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Humidity'], mode='lines', name='Humidity'),row=3, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Humidity'].rolling(window=25).mean(), mode='lines', name='Avg. Hum.'),row=3, col=1)
-    fig.update_yaxes(title_text="Humidity (%)", showgrid=True, row=3, col=1)
-    fig.update_layout( title_text=name + '_' + model)
+
+    # Determine the number of rows needed based on the number of sensors
+    num_sensors = len(sensors)
+    fig = make_subplots(rows=num_sensors, cols=1, shared_xaxes=True, vertical_spacing=0.05)
+
+    # Iterate over sensors and add traces dynamically
+    for i, (sensor, measurement) in enumerate(sensors.items(), start=1):
+        col_name = f"{sensor}_{measurement}"
+        if col_name in df.columns:  # Check if the column exists
+            fig.add_trace(go.Scatter(x=df['time'], y=df[col_name], mode='lines', name=f'{measurement}'), row=i, col=1)
+            fig.add_trace(go.Scatter(x=df['time'], y=df[col_name].rolling(window=25).mean(), mode='lines', name=f'Avg. {measurement}'), row=i, col=1)
+            fig.update_yaxes(title_text=f"{measurement}", showgrid=True, row=i, col=1)
+        else:
+            print(f"Warning: {col_name} not found in the data.")
+
+    # Update layout and return the figure
+    fig.update_layout(title_text=name)
     return fig
+
 
 def main_plotter_AM2315C(query, name, model):
     info = client_Mycodash.query(
@@ -116,7 +145,7 @@ def main_plotter_AM2315C(query, name, model):
     fig.update_layout( title_text=name + '_' + model)
     return fig
 
-def indicator(query, name, model):
+def indicator(query, sensors, name):
     # Query data
     info = client_Mycodash.query(query=query, language="sql")
     df = info.to_pandas()
@@ -124,100 +153,38 @@ def indicator(query, name, model):
     # Initialize the figure
     fig = go.Figure()
 
-    try:
-        # Retrieve the latest values for the indicators
-        co2_value = df[f'{model}_CO2'].iloc[-1]
-        temp_value = df[f'{model}_Temperature'].iloc[-1]
-        humidity_value = df[f'{model}_Humidity'].iloc[-1]
-        time_label = str(df['time'].iloc[-1])
-        
-    except (IndexError, KeyError):
-        # Handle missing data
-        co2_value = np.nan
-        temp_value = np.nan
-        humidity_value = np.nan
-        time_label = "No data available"
+    # Initialize rows for indicators
+    num_sensors = len(sensors)
+    rows = []
 
-    # Add CO2 Indicator
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=co2_value,
-        title="CO2",
-        number={"font": {"size": 50}},
-        domain={'row': 0, 'column': 0}))
+    # Loop over sensors and measurements
+    for i, (sensor, measurement) in enumerate(sensors.items()):
+        col_name = f"{sensor}_{measurement}"
+        try:
+            # Retrieve the latest value for the indicator
+            value = df[col_name].iloc[-1]
+            time_label = str(df['time'].iloc[-1])
+        except (IndexError, KeyError):
+            # Handle missing data
+            value = np.nan
+            time_label = "No data available"
 
-    # Add Temperature Indicator
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=temp_value,
-        title="Temperature",
-        number={"font": {"size": 50}},
-        domain={'row': 1, 'column': 0}))
+        # Add the indicator trace
+        fig.add_trace(go.Indicator(
+            mode="number",
+            value=value,
+            title={"text": f"{sensor} {measurement}"},
+            number={"font": {"size": 50}},
+            domain={'row': i, 'column': 0}
+        ))
 
-    # Add Humidity Indicator
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=humidity_value,
-        title="Humidity",
-        number={"font": {"size": 50}},
-        domain={'row': 2, 'column': 0}))
+        rows.append(f"{sensor}_{measurement}")
 
     # Update layout
     fig.update_layout(
-        title_text=f'{name}_{model}_{time_label}',
-        grid={'rows': 3, 'columns': 1, 'pattern': "independent"},
-        template={'data': {'indicator': [{'mode': "number+delta+gauge",
-                                          'delta': {'reference': 10},
-                                          'gauge': {'shape': "bullet"}}]},
-                  'layout': {'width': 300, 'height': 800}}
-    )
-
-    return fig
-
-def indicator_AM2315C(query, name, model):
-    # Query data
-    info = client_Mycodash.query(query=query, language="sql")
-    df = info.to_pandas()
-
-    # Initialize the figure
-    fig = go.Figure()
-
-    try:
-        # Retrieve the latest values for the indicators
-        temp_value = df[f'{model}_Temperature'].iloc[-1]
-        humidity_value = df[f'{model}_Humidity'].iloc[-1]
-        time_label = str(df['time'].iloc[-1])
-        
-    except (IndexError, KeyError):
-        # Handle missing data
-        temp_value = np.nan
-        humidity_value = np.nan
-        time_label = "No data available"
-
-    # Add Temperature Indicator
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=temp_value,
-        title="Temperature",
-        number={"font": {"size": 50}},
-        domain={'row': 2, 'column': 0}))
-
-    # Add Humidity Indicator
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=humidity_value,
-        title="Humidity",
-        number={"font": {"size": 50}},
-        domain={'row': 1, 'column': 0}))
-
-    # Update layout
-    fig.update_layout(
-        title_text=f'{name}_{model}_{time_label}',
-        grid={'rows': 2, 'columns': 1, 'pattern': "independent"},
-        template={'data': {'indicator': [{'mode': "number+delta+gauge",
-                                          'delta': {'reference': 10},
-                                          'gauge': {'shape': "bullet"}}]},
-                  'layout': {'width': 300, 'height': 800}}
+        title_text=f'{name} - {time_label}',
+        grid={'rows': num_sensors, 'columns': 1, 'pattern': "independent"},
+        height=300 * num_sensors  # Adjust height dynamically
     )
 
     return fig
