@@ -114,12 +114,10 @@ if selected == "Last 24 hrs":
             fig_Lab_1 = main_plotter(query_Lab_1_Spy_1, sensors=sensors_Lab_1, name= "Lab_1_Spy_1")
             st.plotly_chart(fig_Lab_1, use_container_width=True)
         with Lab_2:
-            #st.write("Graphs")
             sensors_Lab_2 = {"SCD30": "CO2", "SCD30": "Humidity","SCD30": "Temperature"}
             fig_Lab_2 = main_plotter(query_Lab_2_Spy_1, sensors=sensors_Lab_2, name= "Lab_2_Spy_1")
             st.plotly_chart(fig_Lab_2,use_container_width=True)
         with Sto_1:
-            #st.write("Graphs")
             sensors_Sto_1 = {"SCD30": "CO2", "SCD30": "Humidity","SCD30": "Temperature"}
             fig_Sto_1 = main_plotter(query_Sto_1_Spy_1, sensors=sensors_Sto_1, name= "Sto_1_Spy_1")
             st.plotly_chart(fig_Sto_1,use_container_width=True)

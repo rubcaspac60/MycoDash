@@ -89,13 +89,14 @@ client_Mycodash = InfluxDBClient3(
     flight_client_options=flight_client_options(
         tls_root_certs=cert))
 
-
 def main_plotter(query, sensors, name):
     # Fetch data
     info = client_Mycodash.query(query=query, language="sql")
     df = info.to_pandas()
-    #format time to DAy_Month_Year format
+
+    # Format time to Day_Month_Year format
     df['time'] = df['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+
     # Determine the number of rows needed based on the number of sensors
     num_sensors = len(sensors)
     fig = make_subplots(rows=num_sensors, cols=1, shared_xaxes=True, vertical_spacing=0.05)
@@ -104,14 +105,31 @@ def main_plotter(query, sensors, name):
     for i, (sensor, measurement) in enumerate(sensors.items(), start=1):
         col_name = f"{sensor}_{measurement}"
         if col_name in df.columns:  # Check if the column exists
-            fig.add_trace(go.Scatter(x=df['time'], y=df[col_name], mode='lines', name=f'{measurement}'), row=i, col=1)
-            fig.add_trace(go.Scatter(x=df['time'], y=df[col_name].rolling(window=25).mean(), mode='lines', name=f'Avg. {measurement}'), row=i, col=1)
+            # Add the main trace
+            fig.add_trace(
+                go.Scatter(x=df['time'], y=df[col_name], mode='lines', name=f'{sensor} - {measurement}'),
+                row=i, col=1
+            )
+            # Add the rolling average trace
+            fig.add_trace(
+                go.Scatter(
+                    x=df['time'],
+                    y=df[col_name].rolling(window=25).mean(),
+                    mode='lines',
+                    name=f'{sensor} - Avg. {measurement}'
+                ),
+                row=i, col=1
+            )
+            # Update y-axis label
             fig.update_yaxes(title_text=f"{measurement}", showgrid=True, row=i, col=1)
         else:
-            print(f"Warning: {col_name} not found in the data.")
+            print(f"Warning: Column {col_name} not found in the data.")
 
-    # Update layout and return the figure
-    fig.update_layout(title_text=name)
+    # Update layout
+    fig.update_layout(
+        title_text=name,
+        height=300 * num_sensors  # Adjust height dynamically based on the number of rows
+    )
     return fig
 
 
