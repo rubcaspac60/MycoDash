@@ -20,24 +20,18 @@ SELECT *
 FROM "Lab_1_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD41_CO2" IS NOT NULL OR "SCD41_Humidity" IS NOT NULL OR "SCD41_Temperature" IS NOT NULL)
 """
 query_Lab_2_Spy_1 = """
 SELECT *
 FROM "Lab_2_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
 """
 query_Tent_1_Spy_1 = """
 SELECT *
 FROM "Tent_1_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD30_Temperature" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_CO2" IS NOT NULL)
 """
 
 query_Tent_2_Spy_1 = """
@@ -45,17 +39,13 @@ SELECT *
 FROM "Tent_2_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD30_Temperature" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_CO2" IS NOT NULL)
 """
 
 query_Tent_3_Spy_1 = """
 SELECT *
 FROM "Tent_3_Spy_1"
 WHERE
-time >= now() - interval '24 hour' AND time <= now()    
-AND
-("AM2315C_Temperature" IS NOT NULL OR "AM2315C_Humidity" IS NOT NULL)
+time >= now() - interval '24 hour' AND time <= now()
 """
 
 query_Tent_4_Spy_1 = """
@@ -63,8 +53,6 @@ SELECT *
 FROM "Tent_4_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
 """
 
 query_Sto_1_Spy_1 = """
@@ -72,27 +60,25 @@ SELECT *
 FROM "Sto_1_Spy_1"
 WHERE
 time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
 """
 
-query_Mini_Tent_1_Spy_1 = """
-SELECT *
-FROM "Mini_Tent_1_Spy_1"
-WHERE
-time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
-"""
+# query_Mini_Tent_1_Spy_1 = """
+# SELECT *
+# FROM "Mini_Tent_1_Spy_1"
+# WHERE
+# time >= now() - interval '24 hour' AND time <= now()
+# AND
+# ("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
+# """
 
-query_Mini_Tent_2_Spy_1 = """
-SELECT *
-FROM "Mini_Tent_2_Spy_1"
-WHERE
-time >= now() - interval '24 hour' AND time <= now()
-AND
-("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
-"""
+# query_Mini_Tent_2_Spy_1 = """
+# SELECT *
+# FROM "Mini_Tent_2_Spy_1"
+# WHERE
+# time >= now() - interval '24 hour' AND time <= now()
+# AND
+# ("SCD30_CO2" IS NOT NULL OR "SCD30_Humidity" IS NOT NULL OR "SCD30_Temperature" IS NOT NULL)
+# """
 #-------- INFLUXDB CONNECTIONS --------
 
 client_Mycodash = InfluxDBClient3(
@@ -127,23 +113,6 @@ def main_plotter(query, sensors, name):
     fig.update_layout(title_text=name)
     return fig
 
-
-def main_plotter_AM2315C(query, name, model):
-    info = client_Mycodash.query(
-        query=query,
-        language="sql")
-    df = info.to_pandas()
-    fig = make_subplots(rows=2, cols=1,
-                        shared_xaxes=True,
-                        vertical_spacing=0.05)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Temperature'], mode='lines', name='Temperature'),row=1, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Temperature'].rolling(window=25).mean(), mode='lines', name='Avg.Temp.'),row=1, col=1)
-    fig.update_yaxes(title_text="Temperature (C)", showgrid=True, row=1, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Humidity'], mode='lines', name='Humidity'),row=2, col=1)
-    fig.add_trace(go.Scatter(x=df['time'], y=df[f'{model}_Humidity'].rolling(window=25).mean(), mode='lines', name='Avg. Hum.'),row=2, col=1)
-    fig.update_yaxes(title_text="Humidity (%)", showgrid=True, row=2, col=1)
-    fig.update_layout( title_text=name + '_' + model)
-    return fig
 
 def indicator(query, sensors, name):
     # Query data
