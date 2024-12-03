@@ -128,7 +128,8 @@ def main_plotter(query, sensors, name):
     # Update layout
     fig.update_layout(
         title_text=name,
-        height=300 * num_sensors  # Adjust height dynamically based on the number of rows
+        height=300 * num_sensors,  # Adjust height dynamically based on the number of rows
+        showlegend=False,#remove legend
     )
     return fig
 
