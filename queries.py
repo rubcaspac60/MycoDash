@@ -139,12 +139,21 @@ def indicator(query, sensors, name):
     info = client_Mycodash.query(query=query, language="sql")
     df = info.to_pandas()
 
+    # Check if the DataFrame is empty
+    if df.empty:
+        st.warning("No data available for the query.")
+        return go.Figure()
+
     # Initialize the figure
     fig = go.Figure()
 
     # Loop over sensors and measurements
     for i, (sensor, measurement) in enumerate(sensors, start=0):
         col_name = f"{sensor}_{measurement}"
+        if col_name not in df.columns:
+            st.warning(f"Column {col_name} not found in the data.")
+            continue
+
         try:
             # Retrieve the latest value for the indicator
             value = df[col_name].iloc[-1]
@@ -171,3 +180,4 @@ def indicator(query, sensors, name):
     )
 
     return fig
+
