@@ -141,8 +141,20 @@ def indicator(query, sensors, name):
 
     # Check if the DataFrame is empty
     if df.empty:
-        st.warning("No data available for the query.")
-        return go.Figure()
+        st.warning(f"No data available for the query: {name}")
+        # Return an empty figure with a placeholder message
+        fig = go.Figure()
+        fig.update_layout(
+            title_text=f"{name} - No Data Available",
+            annotations=[{
+                "text": "No data available for the selected sensors.",
+                "xref": "paper",
+                "yref": "paper",
+                "showarrow": False,
+                "font": {"size": 20}
+            }]
+        )
+        return fig
 
     # Initialize the figure
     fig = go.Figure()
@@ -151,7 +163,7 @@ def indicator(query, sensors, name):
     for i, (sensor, measurement) in enumerate(sensors, start=0):
         col_name = f"{sensor}_{measurement}"
         if col_name not in df.columns:
-            st.warning(f"Column {col_name} not found in the data.")
+            st.warning(f"Column {col_name} not found in the data for {name}.")
             continue
 
         try:
@@ -180,4 +192,5 @@ def indicator(query, sensors, name):
     )
 
     return fig
+
 
