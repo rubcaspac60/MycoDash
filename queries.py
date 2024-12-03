@@ -188,7 +188,7 @@ def indicator(query, sensors, name):
 
     # Update layout
     fig.update_layout(
-        title_text=f'{name} - {time_label}',
+        title_text=f'{name}',
         grid={'rows': len(sensors), 'columns': 1, 'pattern': "independent"},
         height=300 * len(sensors)  # Adjust height dynamically
     )
