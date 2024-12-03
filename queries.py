@@ -102,7 +102,7 @@ def main_plotter(query, sensors, name):
     fig = make_subplots(rows=num_sensors, cols=1, shared_xaxes=True, vertical_spacing=0.05)
 
     # Iterate over sensors and add traces dynamically
-    for i, (sensor, measurement) in enumerate(sensors.items(), start=1):
+    for i, (sensor, measurement) in enumerate(sensors, start=1):
         col_name = f"{sensor}_{measurement}"
         if col_name in df.columns:  # Check if the column exists
             # Add the main trace
