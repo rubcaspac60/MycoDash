@@ -142,12 +142,8 @@ def indicator(query, sensors, name):
     # Initialize the figure
     fig = go.Figure()
 
-    # Initialize rows for indicators
-    num_sensors = len(sensors)
-    rows = []
-
     # Loop over sensors and measurements
-    for i, (sensor, measurement) in enumerate(sensors.items()):
+    for i, (sensor, measurement) in enumerate(sensors, start=0):
         col_name = f"{sensor}_{measurement}"
         try:
             # Retrieve the latest value for the indicator
@@ -167,13 +163,11 @@ def indicator(query, sensors, name):
             domain={'row': i, 'column': 0}
         ))
 
-        rows.append(f"{sensor}_{measurement}")
-
     # Update layout
     fig.update_layout(
         title_text=f'{name} - {time_label}',
-        grid={'rows': num_sensors, 'columns': 1, 'pattern': "independent"},
-        height=300 * num_sensors  # Adjust height dynamically
+        grid={'rows': len(sensors), 'columns': 1, 'pattern': "independent"},
+        height=300 * len(sensors)  # Adjust height dynamically
     )
 
     return fig
