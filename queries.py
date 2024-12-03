@@ -134,6 +134,8 @@ def main_plotter(query, sensors, name):
     return fig
 
 
+import logging
+
 def indicator(query, sensors, name):
     # Query data
     info = client_Mycodash.query(query=query, language="sql")
@@ -141,7 +143,7 @@ def indicator(query, sensors, name):
 
     # Check if the DataFrame is empty
     if df.empty:
-        st.warning(f"No data available for the query: {name}")
+        logging.warning(f"No data available for the query: {name}")
         # Return an empty figure with a placeholder message
         fig = go.Figure()
         fig.update_layout(
@@ -163,7 +165,7 @@ def indicator(query, sensors, name):
     for i, (sensor, measurement) in enumerate(sensors, start=0):
         col_name = f"{sensor}_{measurement}"
         if col_name not in df.columns:
-            st.warning(f"Column {col_name} not found in the data for {name}.")
+            logging.warning(f"Column {col_name} not found in the data for {name}.")
             continue
 
         try:
@@ -192,5 +194,3 @@ def indicator(query, sensors, name):
     )
 
     return fig
-
-
