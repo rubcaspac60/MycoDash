@@ -30,7 +30,7 @@ st.set_page_config(page_title="MycoDashboard", page_icon=":bar_chart:", layout="
 with st.container():
     #st.subheader("Infra_Fungarium Dashboard")
     Logo = Image.open("images/Fungarium_Logo_1.jpg")
-    st.image(Logo, use_column_width=False, width=150)
+    st.image(Logo, use_container_width=False, width=150)
     st.title("Atmospheric Conditions")
     st.write("Welcome to the Fungarium MycoDashboard! This dashboard is designed to provide real-time data on the atmospheric conditions within the Fungarium. The Fungarium is a controlled environment for growing mushrooms, and this dashboard will provide data on temperature, humidity, and CO2 levels within the Fungarium.")
     st.write('Raw data can be directly downloaded from this link [InfluxDataNavigator](https://eu-central-1-1.aws.cloud2.influxdata.com/orgs/c46a66937900cfee/data-explorer?fluxScriptEditor)')
