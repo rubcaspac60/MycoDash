@@ -50,7 +50,7 @@ time >= now() - interval '1 day'
 
 query_Tent_4_Spy_1 = """
 SELECT *
-FROM "Tent_4_Spy_1"
+FROM "MycoBrain_12"
 WHERE
 time >= now() - interval '1 day'
 """
